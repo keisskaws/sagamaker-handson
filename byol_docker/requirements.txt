@@ -1,0 +1,17 @@
+# BYOL用の依存関係
+numpy==1.21.0
+pandas==1.3.0
+scikit-learn==1.0.2
+matplotlib==3.4.2
+seaborn==0.11.1
+
+# カスタムMLライブラリ（例）
+# tensorflow==2.8.0
+# pytorch==1.11.0
+# transformers==4.18.0
+
+# 独自のライブラリ（例）
+# my-custom-ml-lib==1.0.0
+
+# SageMaker関連
+sagemaker-training==4.0.0
