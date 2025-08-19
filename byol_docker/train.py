@@ -6,6 +6,7 @@ BYOL (Bring Your Own Library) トレーニングスクリプト
 
 import argparse
 import os
+import sys
 import pandas as pd
 import numpy as np
 import joblib
@@ -44,10 +45,21 @@ def parse_args():
     
     # カスタムハイパーパラメータ
     parser.add_argument('--use-custom-ensemble', type=str, default='true')
+    parser.add_argument('--use_custom_ensemble', type=str, default='true')  # アンダースコア版
+    parser.add_argument('--ensemble-weights', type=str, default='0.4,0.4,0.2')
+    parser.add_argument('--ensemble_weights', type=str, default='0.4,0.4,0.2')  # アンダースコア版
+    parser.add_argument('--custom-preprocessing', type=str, default='true')
+    parser.add_argument('--custom_preprocessing', type=str, default='true')  # アンダースコア版
     parser.add_argument('--ensemble-rf', type=str, default='true')
+    parser.add_argument('--ensemble_rf', type=str, default='true')  # アンダースコア版
     parser.add_argument('--ensemble-gb', type=str, default='true')
+    parser.add_argument('--ensemble_gb', type=str, default='true')  # アンダースコア版
     parser.add_argument('--ensemble-lr', type=str, default='true')
+    parser.add_argument('--ensemble_lr', type=str, default='true')  # アンダースコア版
     parser.add_argument('--feature-selection-k', type=int, default=20)
+    parser.add_argument('--feature_selection_k', type=int, default=20)  # アンダースコア版
+    parser.add_argument('--n-jobs', type=int, default=-1)
+    parser.add_argument('--n_jobs', type=int, default=-1)  # アンダースコア版
     
     return parser.parse_args()
 
@@ -209,7 +221,23 @@ def model_fn(model_dir):
 
 def main():
     """メイン実行関数"""
+    print("🔍 引数を解析中...")
     args = parse_args()
+    
+    print(f"📁 受信したハイパーパラメータ:")
+    
+    # アンダースコア版を優先して使用
+    use_custom_ensemble = getattr(args, 'use_custom_ensemble', None) or getattr(args, 'use-custom-ensemble', 'true')
+    ensemble_weights = getattr(args, 'ensemble_weights', None) or getattr(args, 'ensemble-weights', '0.4,0.4,0.2')
+    custom_preprocessing = getattr(args, 'custom_preprocessing', None) or getattr(args, 'custom-preprocessing', 'true')
+    n_jobs = getattr(args, 'n_jobs', None) or getattr(args, 'n-jobs', -1)
+    feature_selection_k = getattr(args, 'feature_selection_k', None) or getattr(args, 'feature-selection-k', 20)
+    
+    print(f"  use-custom-ensemble: {use_custom_ensemble}")
+    print(f"  ensemble-weights: {ensemble_weights}")
+    print(f"  custom-preprocessing: {custom_preprocessing}")
+    print(f"  n-jobs: {n_jobs}")
+    print(f"  feature-selection-k: {feature_selection_k}")
     
     print("=== BYOL (Bring Your Own Library) トレーニング開始 ===")
     print("引数:")
@@ -270,7 +298,7 @@ def main():
     print(f"処理後の特徴量数: {X_train_processed.shape[1]}")
     
     # カスタムモデルトレーニング
-    if args.use_custom_ensemble.lower() == 'true':
+    if use_custom_ensemble.lower() == 'true':
         model, training_results = train_custom_model(
             X_train_processed, y_train, 
             X_val_processed, y_val,
@@ -319,4 +347,22 @@ def main():
         print(f"テスト精度: {evaluation_results.get('accuracy', 'N/A'):.4f}")
 
 if __name__ == '__main__':
-    main()
+    try:
+        print("🚀 BYOL Training Script 開始")
+        print(f"Pythonバージョン: {sys.version}")
+        print(f"カスタムライブラリ利用可能: {CUSTOM_LIB_AVAILABLE}")
+        
+        main()
+        
+        print("✅ BYOL Training Script 正常終了")
+        
+    except Exception as e:
+        print(f"❌ BYOL Training Script エラー: {str(e)}")
+        print(f"エラータイプ: {type(e).__name__}")
+        
+        import traceback
+        print("スタックトレース:")
+        traceback.print_exc()
+        
+        # エラーで終了
+        sys.exit(1)
