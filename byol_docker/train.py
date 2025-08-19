@@ -19,13 +19,18 @@ from sklearn.feature_selection import SelectKBest, f_classif
 
 # カスタムライブラリをインポート
 try:
-    from custom_ml_lib import CustomEnsembleClassifier, CustomPreprocessor
-    from custom_ml_lib.utils import load_custom_data, save_custom_model
+    from custom_ml_lib.custom_classifier import CustomEnsembleClassifier
+    from custom_ml_lib.custom_preprocessor import CustomPreprocessor
+    from custom_ml_lib import utils as custom_utils
     print("✅ カスタムライブラリのインポート成功")
+    CUSTOM_LIB_AVAILABLE = True
 except ImportError as e:
     print(f"⚠️ カスタムライブラリのインポートに失敗: {e}")
     print("標準ライブラリを使用します")
     CustomEnsembleClassifier = None
+    CustomPreprocessor = None
+    custom_utils = None
+    CUSTOM_LIB_AVAILABLE = False
 
 def parse_args():
     """コマンドライン引数の解析"""
