@@ -18,7 +18,26 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectKBest, f_classif
 
+# カレントディレクトリをPythonパスに追加
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
+    print(f"📁 Pythonパスに追加: {current_dir}")
+
 # カスタムライブラリをインポート
+print("🔍 カスタムライブラリのインポートを試行中...")
+print(f"Pythonパス: {sys.path[:3]}...")  # 最初の3つを表示
+print(f"カレントディレクトリ: {current_dir}")
+
+# custom_ml_libフォルダの存在確認
+custom_lib_path = os.path.join(current_dir, 'custom_ml_lib')
+print(f"custom_ml_libパス: {custom_lib_path}")
+print(f"custom_ml_lib存在: {os.path.exists(custom_lib_path)}")
+
+if os.path.exists(custom_lib_path):
+    files = os.listdir(custom_lib_path)
+    print(f"custom_ml_lib内ファイル: {files}")
+
 try:
     from custom_ml_lib.custom_classifier import CustomEnsembleClassifier
     from custom_ml_lib.custom_preprocessor import CustomPreprocessor
